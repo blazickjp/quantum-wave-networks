@@ -43,7 +43,7 @@ def train_wave_network():
     )
 
     # Initialize model and training components
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    device = torch.device("mps" if torch.backends.mps.is_available() else "cpu")
     logger.info(f"Using device: {device}")
 
     model = WaveNetwork(

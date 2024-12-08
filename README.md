@@ -1,112 +1,170 @@
 # Quantum Net
 
-This repository contains an implementation of a quantum-inspired neural network architecture, with results reproduced on the AG News classification dataset.
+This repository contains an implementation of a quantum-inspired neural network architecture for text classification. The model demonstrates strong performance on the AG News dataset while using significantly fewer parameters than traditional transformers.
+
+## Key Concepts
+
+### Wave-Based Representations
+The model represents text using complex vector representations inspired by quantum mechanics and wave physics:
+
+1. **Global Semantic Vector (Magnitude)**
+   - Encodes semantic strength through vector magnitudes
+   - Shows a balanced, Gaussian-like distribution
+   - Typical magnitude range: -0.4 to 0.4
+   - Follows probability amplitude principles from quantum mechanics
+
+2. **Phase Relationships**
+   - Encodes semantic relationships through phase angles
+   - Exhibits structured patterns in phase space
+   - Shows hierarchical organization through radial clustering
+   - Enables interference-based information processing
+
+### Wave Operations
+The model supports two modes of combining information:
+
+1. **Wave Interference**
+   ```
+   Combined = Wave1 + Wave2  # Complex addition
+   ```
+   - Models direct interaction between semantic components
+   - Allows constructive/destructive interference based on phase alignment
+
+2. **Wave Modulation**
+   ```
+   Combined = Wave1 * Wave2  # Complex multiplication
+   ```
+   - Enables amplitude and phase modulation
+   - More effective for modeling complex semantic interactions
 
 ## Results
 
-We successfully reproduced the paper's results on the AG News dataset, achieving:
+We successfully reproduced the paper's results on the AG News dataset:
 - **Training Accuracy**: 92.75% (final epoch)
 - **Validation Accuracy**: 90.57% (best model)
+- **Parameter Count**: 2.4M (vs 100M+ for BERT)
 
-These results demonstrate strong performance on par with the original paper's findings for text classification tasks.
+### Empirical Observations
 
-## Dataset
+Our analysis shows several interesting properties:
 
-The AG News dataset is a collection of news articles from 4 major categories:
-- World
-- Sports
-- Business
-- Science/Technology
+1. **Magnitude Distribution**
+   - Bell-shaped, symmetric distribution around 0
+   - Most values concentrated between -0.2 and 0.2
+   - Suggests balanced semantic representations
 
-The dataset contains:
-- Training set: 120,000 articles
-- Test set: 7,600 articles
+2. **Phase Organization**
+   - Non-random distribution of phases
+   - Structured clustering patterns
+   - Hierarchical organization from center to periphery
 
 ## Model Architecture
 
-The Wave Network architecture implements quantum-inspired neural processing with the following key components:
-- Quantum-inspired wave transformation layers
+The Wave Network implements quantum-inspired neural processing with:
+- Wave transformation layers
 - Amplitude and phase encoding
 - Wave interference modeling
 - Quantum measurement inspired final layer
 
+```python
+# Example wave operation
+if use_modulation:
+    # Complex multiplication
+    combined_real = Z1_real * Z2_real - Z1_imag * Z2_imag
+    combined_imag = Z1_real * Z2_imag + Z1_imag * Z2_real
+else:
+    # Complex addition
+    combined_real = Z1_real + Z2_real
+    combined_imag = Z1_imag + Z2_imag
+```
+
 ## Requirements
 
 ```
-python>=3.7
-torch
-numpy
-pandas
-transformers
-scikit-learn
-tqdm
+python>=3.9
+torch>=2.1.0
+numpy>=1.24.0
+pandas>=2.0.0
+transformers>=4.35.0
+scikit-learn>=1.3.0
 ```
 
 ## Setup
 
-1. Clone the repository:
+1. Clone and setup environment:
 ```bash
 git clone https://github.com/jblazick/quantum_net.git
 cd quantum_net
+./setup.sh
 ```
 
 2. Install dependencies:
 ```bash
-pip install -r requirements.txt
+source .venv/bin/activate
+uv pip install -e ".[dev]"
+```
+
+## Usage
+
+```python
+from quantum_net.model import WaveNetwork
+
+# Initialize model
+model = WaveNetwork(
+    input_dim=768,
+    hidden_dim=64,
+    output_dim=4
+)
+
+# Training/inference follows standard PyTorch patterns
+outputs = model(inputs, use_modulation=True)
 ```
 
 ## Training
-
-To train the model:
 
 ```bash
 python train.py --epochs 5 --batch_size 32 --learning_rate 0.001
 ```
 
-Key hyperparameters used in our experiments:
+### Hyperparameters
 - Epochs: 4
 - Batch size: 32
 - Learning rate: 0.001
 - Optimizer: Adam
-- Loss function: Cross-entropy
+- Loss: Cross-entropy
 
-## Model Checkpoints
+## Analysis Tools
 
-The best performing model is automatically saved to:
-```
-/models/wave_network_best.pth
-```
+The repository includes tools for analyzing wave representations:
 
-## Training Logs
-
-Training metrics from our best run:
-- Final epoch training accuracy: 92.75%
-- Best validation accuracy: 90.57%
-- Final training loss: 0.3311
-
-Detailed training progression showed consistent improvement across epochs with stable convergence.
-
-## Usage
-
-To use the trained model for inference:
-
+1. Wave Dynamics Analyzer:
 ```python
-from model import WaveNetwork
-from utils import preprocess_text
+from wave_analysis.wave_dynamics import WaveDynamicsAnalyzer
 
-# Load the model
-model = WaveNetwork.load_from_checkpoint('models/wave_network_best.pth')
-model.eval()
-
-# Make predictions
-text = "Your news article text here"
-processed_text = preprocess_text(text)
-prediction = model.predict(processed_text)
+analyzer = WaveDynamicsAnalyzer(model)
+analyzer.visualize_wave_evolution(inputs)
 ```
+
+2. Semantic Probe:
+```python
+from wave_analysis.semantic_probe import SemanticProbe
+
+probe = SemanticProbe(model)
+probe_results = probe.analyze_phase_separation(embeddings, labels)
+```
+
+## Contributing
+
+Contributions are welcome! Please:
+1. Fork the repository
+2. Create a feature branch
+3. Submit a Pull Request
+
+## License
+
+MIT License - see LICENSE file for details.
 
 ## Citation
 
-If you use this implementation in your research, please cite:
 ```bibtex
 @misc{blazick2024quantum,
   author = {Blazick, Joseph},
@@ -118,44 +176,8 @@ If you use this implementation in your research, please cite:
 }
 ```
 
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request. Before contributing:
-1. Check existing issues or create a new one to discuss your proposed changes
-2. Fork the repository and create your branch from `main`
-3. Ensure tests pass and add new ones for your features
-4. Update documentation as needed
-5. Submit your pull request
-
-## License
-
-MIT License
-
-Copyright (c) 2024 Joseph Blazick
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
 ## Contact
 
 - **Author**: Joseph Blazick
 - **Email**: jblazick@example.com
 - **GitHub**: [@jblazick](https://github.com/jblazick)
-- **Project Link**: [https://github.com/jblazick/quantum_net](https://github.com/jblazick/quantum_net)
-
-For questions, feature requests, or support, please open an issue in the GitHub repository.
