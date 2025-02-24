@@ -26,7 +26,7 @@ def train_wave_network():
     # Setup data paths
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     train_path = os.path.join(base_dir, "data", "train.csv")
-    # test_path = os.path.join(base_dir, "data", "test.csv")
+    test_path = os.path.join(base_dir, "data", "test.csv")
 
     logger.info(f"Loading data from {train_path}")
 
